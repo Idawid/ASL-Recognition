@@ -23,7 +23,9 @@ def live_button_function():
 
 def video_button_function():
     filename = fd.askopenfilename()
-    validate_video_file(filename)
+
+    if not validate_video_file(filename):
+        return
     # run the video and save result video
 
     result_vid = filename  # the new video name
@@ -47,7 +49,10 @@ def video_button_function():
 
 def photo_button_function():
     dirname = fd.askdirectory()
-    validate_directory(dirname)
+
+    if not validate_directory(dirname):
+        return
+
     for img_name in os.listdir(dirname):
         validate_photo_file(img_name)
         # save photo with bounding box to another directory

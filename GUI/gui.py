@@ -4,6 +4,7 @@ import tkinter, tkinter.messagebox
 import customtkinter
 from tkinter import filedialog as fd
 from GUI.validation import validate_video_file, validate_photo_file, validate_directory
+import recognition.py_scripts.recognitionAllLetters as recognise
 
 customtkinter.set_appearance_mode("dark")
 customtkinter.set_default_color_theme("dark-blue")
@@ -19,6 +20,7 @@ root.iconbitmap("GUI/hand_sign.ico")
 def live_button_function():
     # link to recognitionAllLetters.py
     print("recognitionAllLetters should run")
+    recognise.start_recognition_live()
 
 
 def video_button_function():
@@ -28,6 +30,7 @@ def video_button_function():
         return
     # run the video and save result video
 
+    recognise.start_recognition_video(filename)
     result_vid = filename  # the new video name
 
     if view.get() == 'on':

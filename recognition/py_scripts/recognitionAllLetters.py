@@ -46,7 +46,7 @@ def segment_hand(frame, threshold=25):
         hand_segment_max_cont = max(contours, key=cv2.contourArea)
 
         # Returning the hand segment(max contour) and the thresholded image of hand...
-        return (thresholded, hand_segment_max_cont)
+        return thresholded, hand_segment_max_cont
 
 
 def start_recognition_live():
@@ -54,11 +54,11 @@ def start_recognition_live():
 
 
 def start_recognition_video(filename):
-    start_recognition(filename, True)
+    return start_recognition(filename, True)
 
 
 def start_recognition_photo(dirname):
-    start_recognition(dirname, False)
+    return start_recognition(dirname, False)
 
 
 def start_recognition(path, is_video):
@@ -68,14 +68,26 @@ def start_recognition(path, is_video):
         cam = cv2.VideoCapture(0)
 
     if path and is_video:
+        res_filename = path.replace('.mp4', '') + '_result.avi'
         cam = cv2.VideoCapture(path)
+        frame_width = int(cam.get(3))
+        frame_height = int(cam.get(4))
+
+        size = (frame_width, frame_height)
+        result = cv2.VideoWriter(res_filename,
+                                 cv2.VideoWriter_fourcc(*'MJPG'),
+                                 10, size)
 
     num_frames = 0
     while True:
         ret, frame = cam.read()
 
+        if not ret:
+            break
+
         # filpping the frame to prevent inverted image of captured frame...
-        frame = cv2.flip(frame, 1)
+        if not path:
+            frame = cv2.flip(frame, 1)
 
         frame_copy = frame.copy()
 
@@ -89,7 +101,8 @@ def start_recognition(path, is_video):
 
             cal_accum_avg(gray_frame, accumulated_weight)
 
-            cv2.putText(frame_copy, "FETCHING BACKGROUND...PLEASE WAIT", (80, 400), cv2.FONT_HERSHEY_SIMPLEX, 0.9,
+            if not path:
+                cv2.putText(frame_copy, "FETCHING BACKGROUND...PLEASE WAIT", (80, 400), cv2.FONT_HERSHEY_SIMPLEX, 0.9,
                         (0, 0, 255), 2)
 
         else:
@@ -103,7 +116,8 @@ def start_recognition(path, is_video):
                 # Drawing contours around hand segment
                 cv2.drawContours(frame_copy, [hand_segment + (ROI_right, ROI_top)], -1, (255, 0, 0), 1)
 
-                cv2.imshow("Thesholded Hand Image", thresholded)
+                if not path:
+                    cv2.imshow("Thesholded Hand Image", thresholded)
 
                 thresholded = cv2.resize(thresholded, (64, 64))
                 thresholded = cv2.cvtColor(thresholded, cv2.COLOR_GRAY2RGB)
@@ -113,21 +127,34 @@ def start_recognition(path, is_video):
                 cv2.putText(frame_copy, word_dict[np.argmax(pred)], (170, 45), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
 
         # Draw ROI on frame_copy
-        cv2.rectangle(frame_copy, (ROI_left, ROI_top), (ROI_right, ROI_bottom), (255, 128, 0), 3)
+        if not path:
+            cv2.rectangle(frame_copy, (ROI_left, ROI_top), (ROI_right, ROI_bottom), (255, 128, 0), 3)
 
         # incrementing the number of frames for tracking
         num_frames += 1
 
         # Display the frame with segmented hand
-        cv2.putText(frame_copy, "DataFlair hand sign recognition_ _ _", (10, 20), cv2.FONT_ITALIC, 0.5, (51, 255, 51), 1)
-        cv2.imshow("Sign Detection", frame_copy)
+        cv2.putText(frame_copy, "DataFlair hand sign recognition", (10, 20), cv2.FONT_ITALIC, 0.5, (0, 0, 0), 1)
+        if not path:
+            cv2.imshow("Sign Detection", frame_copy)
+        if is_video:
+            result.write(frame_copy)
 
         # Close windows with Esc
-        k = cv2.waitKey(1) & 0xFF
+        if not path:
+            k = cv2.waitKey(1) & 0xFF
 
-        if k == 27:
-            break
+            if k == 27:
+                break
 
     # Release the camera and destroy all the windows
     cam.release()
+    if is_video:
+        result.release()
     cv2.destroyAllWindows()
+
+    if not path:
+        return
+
+    if is_video:
+        return res_filename

@@ -30,11 +30,10 @@ def video_button_function():
         return
     # run the video and save result video
 
-    recognise.start_recognition_video(filename)
-    result_vid = filename  # the new video name
+    result_vid = recognise.start_recognition_video(filename)
 
     if view.get() == 'on':
-        video = cv2.VideoCapture(filename)
+        video = cv2.VideoCapture(result_vid)
         if not video.isOpened():
             print("Error opening video file")
 

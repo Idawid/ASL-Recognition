@@ -3,7 +3,7 @@ import cv2
 import tkinter, tkinter.messagebox
 import customtkinter
 from tkinter import filedialog as fd
-from validation import validate_video_file, validate_photo_file, validate_directory
+from GUI.validation import validate_video_file, validate_photo_file, validate_directory
 
 customtkinter.set_appearance_mode("dark")
 customtkinter.set_default_color_theme("dark-blue")
@@ -13,7 +13,7 @@ root.geometry("500x300")
 root.minsize(400, 300)
 root.maxsize(400, 300)
 root.title("ML project")
-root.iconbitmap("hand_sign.ico")
+root.iconbitmap("GUI/hand_sign.ico")
 
 
 def live_button_function():
@@ -74,6 +74,10 @@ def info_button_function():
                                            "Authors: Maciej Radziwił\n\tDawid Mączka\n\t"
                                            "Nikodem Olszowy\n\tMateusz Sudejko\n\t"
                                            "Maciej Saju Sajecki")
+
+
+def start_gui():
+    root.mainloop()
 
 
 frame = customtkinter.CTkFrame(master=root,

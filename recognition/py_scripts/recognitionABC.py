@@ -4,7 +4,7 @@ import keras
 from keras.preprocessing.image import ImageDataGenerator
 import tensorflow as tf
 
-model = keras.models.load_model(r"C:/Users/48517/Desktop/ML/recognition/model_20_epocks_no_fine_tuning.h5")
+model = keras.models.load_model(r"../models/best_model_ABC.h5")
 
 background = None
 accumulated_weight = 0.5
@@ -14,10 +14,7 @@ ROI_bottom = 300
 ROI_right = 150
 ROI_left = 350
 
-word_dict = {0:'A',1:'B',2:'C', 3:'D', 4:'E', 5:'F', 6:'G', 7:'H',
-            8:'I', 9:'K', 10:'L', 11:'M', 12:'N', 13:'O', 14:'P',
-            15:'Q', 16:'R', 17:'S', 18:'T', 19:'U', 20:'V', 21:'W',
-            22:'X', 23:'Y'}
+word_dict = {0:'A',1:'B',2:'C'}
 
 def cal_accum_avg(frame, accumulated_weight):
 

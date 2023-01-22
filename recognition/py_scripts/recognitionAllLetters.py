@@ -132,7 +132,8 @@ def start_recognition(path, is_video, is_abc):
                 thresholded, hand_segment = hand
 
                 # Drawing contours around hand segment
-                cv2.drawContours(frame_copy, [hand_segment + (ROI_right, ROI_top)], -1, (255, 0, 0), 1)
+                if not path:
+                    cv2.drawContours(frame_copy, [hand_segment + (ROI_right, ROI_top)], -1, (255, 0, 0), 1)
 
                 if not path:
                     cv2.imshow("Thesholded Hand Image", thresholded)

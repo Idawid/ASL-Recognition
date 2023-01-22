@@ -1,6 +1,6 @@
 import os
 
-COMPATIBLE_VIDEO_EXTENTIONS = ['.mp4', '.mov', '.MP4', '.MOV']
+COMPATIBLE_VIDEO_EXTENTIONS = ['.mp4', '.avi', '.MP4', '.AVI']
 COMPATIBLE_PHOTO_EXTENTIONS = ['.jpg', '.JPG', '.jpeg', '.JPEG', '.png', '.PNG']
 DEBUG_MODE = True
 

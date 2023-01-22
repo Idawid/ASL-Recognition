@@ -9,8 +9,8 @@ accumulated_weight = 0.5
 
 ROI_top = 100
 ROI_bottom = 300
-ROI_right = 150
-ROI_left = 350
+ROI_right = 100
+ROI_left = 300
 
 word_dict = {0: 'A', 1: 'B', 2: 'C', 3: 'D', 4: 'E', 5: 'F', 6: 'G', 7: 'H',
              8: 'I', 9: 'K', 10: 'L', 11: 'M', 12: 'N', 13: 'O', 14: 'P',
@@ -73,13 +73,10 @@ def start_recognition(path, is_video, is_abc):
     if path and is_video:
         res_filename = path.replace('.mp4', '') + '_result.avi'
         cam = cv2.VideoCapture(path)
-        frame_width = int(cam.get(3))
-        frame_height = int(cam.get(4))
-
-        size = (frame_width, frame_height)
+        size = (400, 400)
         result = cv2.VideoWriter(res_filename,
-                                 cv2.VideoWriter_fourcc(*'MJPG'),
-                                 60, size)
+                                 cv2.VideoWriter_fourcc(*'XVID'),
+                                 30, size)
 
     num_frames = 0
     while True:
@@ -91,6 +88,9 @@ def start_recognition(path, is_video, is_abc):
         # filpping the frame to prevent inverted image of captured frame...
         if not path:
             frame = cv2.flip(frame, 1)
+        elif is_video:
+            dim = (400, 400)
+            frame = cv2.resize(frame, dim, fx=0, fy=0, interpolation=cv2.INTER_CUBIC)
 
         frame_copy = frame.copy()
 

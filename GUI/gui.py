@@ -19,7 +19,6 @@ root.iconbitmap("GUI/hand_sign.ico")
 
 def live_button_function():
     # link to recognitionAllLetters.py
-    print("recognitionAllLetters should run")
     recognise.start_recognition_live(is_abc())
 
 
@@ -71,9 +70,7 @@ def photo_button_function():
 
 
 def is_abc():
-    if basic.get() == 'on':
-        return True
-    return False
+    return basic.get() == 'on'
 
 
 def info_button_function():

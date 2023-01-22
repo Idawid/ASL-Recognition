@@ -49,20 +49,23 @@ def segment_hand(frame, threshold=25):
         return thresholded, hand_segment_max_cont
 
 
-def start_recognition_live():
-    start_recognition(None, False)
+def start_recognition_live(is_abc):
+    start_recognition(None, False, is_abc)
 
 
-def start_recognition_video(filename):
-    return start_recognition(filename, True)
+def start_recognition_video(filename, is_abc):
+    return start_recognition(filename, True, is_abc)
 
 
-def start_recognition_photo(dirname):
-    return start_recognition(dirname, False)
+def start_recognition_photo(dirname, is_abc):
+    return start_recognition(dirname, False, is_abc)
 
 
-def start_recognition(path, is_video):
-    model = keras.models.load_model(r"recognition/models/model_EfficientNetB0.h5")
+def start_recognition(path, is_video, is_abc):
+    if not is_abc:
+        model = keras.models.load_model(r"recognition/models/model_EfficientNetB0.h5")
+    else:
+        model = keras.models.load_model(r"recognition/models/best_model_ABC.h5")
 
     if not path:
         cam = cv2.VideoCapture(0)
@@ -76,7 +79,7 @@ def start_recognition(path, is_video):
         size = (frame_width, frame_height)
         result = cv2.VideoWriter(res_filename,
                                  cv2.VideoWriter_fourcc(*'MJPG'),
-                                 10, size)
+                                 60, size)
 
     num_frames = 0
     while True:

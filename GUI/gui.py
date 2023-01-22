@@ -20,7 +20,7 @@ root.iconbitmap("GUI/hand_sign.ico")
 def live_button_function():
     # link to recognitionAllLetters.py
     print("recognitionAllLetters should run")
-    recognise.start_recognition_live()
+    recognise.start_recognition_live(is_abc())
 
 
 def video_button_function():
@@ -29,8 +29,7 @@ def video_button_function():
     if not validate_video_file(filename):
         return
     # run the video and save result video
-
-    result_vid = recognise.start_recognition_video(filename)
+    result_vid = recognise.start_recognition_video(filename, is_abc())
 
     if view.get() == 'on':
         video = cv2.VideoCapture(result_vid)
@@ -71,6 +70,12 @@ def photo_button_function():
         cv2.destroyAllWindows()
 
 
+def is_abc():
+    if basic.get() == 'on':
+        return True
+    return False
+
+
 def info_button_function():
     tkinter.messagebox.showinfo("Authors", "Course: Introduction to Machine Learning 22/23\n\n"
                                            "Authors: Maciej Radziwił\n\tDawid Mączka\n\t"
@@ -92,13 +97,13 @@ label = customtkinter.CTkLabel(master=frame, text="Sign alphabet recognition", f
 label.place(relx=0.5, rely=0.05, anchor=tkinter.N)
 
 live_button = customtkinter.CTkButton(master=frame, text="Live recognition", command=live_button_function)
-live_button.place(relx=0.5, rely=0.35, anchor=tkinter.CENTER)
+live_button.place(relx=0.5, rely=0.30, anchor=tkinter.CENTER)
 
 video_button = customtkinter.CTkButton(master=frame, text="Video analysis", command=video_button_function)
-video_button.place(relx=0.5, rely=0.55, anchor=tkinter.CENTER)
+video_button.place(relx=0.5, rely=0.50, anchor=tkinter.CENTER)
 
 photo_button = customtkinter.CTkButton(master=frame, text="Photo set analysis", command=photo_button_function)
-photo_button.place(relx=0.5, rely=0.75, anchor=tkinter.CENTER)
+photo_button.place(relx=0.5, rely=0.70, anchor=tkinter.CENTER)
 
 button = customtkinter.CTkButton(master=frame,
                                  width=20,
@@ -117,5 +122,11 @@ view = tkinter.StringVar(master=frame, value="off")
 switch_1 = customtkinter.CTkSwitch(master=frame, text="view non-live results",
                                    variable=view, onvalue="on", offvalue="off")
 switch_1.place(relx=0.25, rely=0.91, anchor=tkinter.CENTER)
+
+basic = tkinter.StringVar(master=frame, value="on")
+
+switch_2 = customtkinter.CTkSwitch(master=frame, text="basic",
+                                   variable=basic, onvalue="on", offvalue="off")
+switch_2.place(relx=0.7, rely=0.91, anchor=tkinter.CENTER)
 
 root.mainloop()

@@ -57,8 +57,8 @@ def start_recognition_video(filename, is_abc):
     return start_recognition(filename, True, is_abc)
 
 
-def start_recognition_photo(dirname, is_abc):
-    return start_recognition(dirname, False, is_abc)
+def start_recognition_photo(filename, is_abc):
+    return start_recognition(filename, False, is_abc)
 
 
 def start_recognition(path, is_video, is_abc):
@@ -77,6 +77,33 @@ def start_recognition(path, is_video, is_abc):
         result = cv2.VideoWriter(res_filename,
                                  cv2.VideoWriter_fourcc(*'XVID'),
                                  30, size)
+
+    if path and not is_video:
+        img = cv2.imread(path)
+        segmented_image_name = path.replace('.jpg', '') + '_result.jpg'
+
+        # convert segmented image to grayscale and establish ground by thresholding
+        # use hue saturation value to create mask
+        resize = cv2.resize(img, (400, 400), interpolation=cv2.INTER_AREA)
+        gray = cv2.cvtColor(resize, cv2.COLOR_BGR2GRAY)
+        ret, thresh1 = cv2.threshold(gray, 160, 255, cv2.THRESH_BINARY)
+
+        # establish value boundaries (done via trial and error)
+        ##upper_bound = np.array([85, 235, 196])
+
+        # create mask from boundaries and apply blur
+        #mask = cv2.inRange(gray, lower_bound, upper_bound)
+        #mask = cv2.medianBlur(mask, 13)
+
+        thresholded = cv2.resize(thresh1, (64, 64))
+        thresholded = cv2.cvtColor(thresholded, cv2.COLOR_GRAY2RGB)
+        thresholded = np.reshape(thresholded, (1, thresholded.shape[0], thresholded.shape[1], 3))
+        pred = model.predict(thresholded)
+        cv2.putText(resize, word_dict[np.argmax(pred)], (170, 45), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+        #cv2.imshow('a', resize)
+        #cv2.waitKey(0)
+        return resize
+
 
     num_frames = 0
     while True:

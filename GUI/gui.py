@@ -62,10 +62,10 @@ def photo_button_function():
         # save photo with bounding box to another directory
 
     if view.get() == 'on':
-        for img_name in os.listdir(dirname + '\\results'):
+        for img_name in os.listdir(dirname + '/results'):
             if img_name == 'desktop.ini':
                 continue
-            img = cv2.imread(dirname + '\\results' + '\\' + img_name)
+            img = cv2.imread(dirname + '/results/' + img_name)
             cv2.imshow("Results photo", img)
             cv2.waitKey(0)
         cv2.destroyAllWindows()

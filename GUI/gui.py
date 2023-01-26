@@ -77,7 +77,7 @@ def is_abc():
 
 def info_button_function():
     tkinter.messagebox.showinfo("Authors", "Course: Introduction to Machine Learning 22/23\n\n"
-                                           "Authors: Maciej Radziwił\n\tDawid Mączka\n\t"
+                                           "Authors: Maciej Radziwiłł\n\tDawid Mączka\n\t"
                                            "Nikodem Olszowy\n\tMateusz Sudejko\n\t"
                                            "Maciej Saju Sajecki")
 

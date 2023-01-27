@@ -52,18 +52,20 @@ def photo_button_function():
 
     if not validate_directory(dirname):
         return
-
+    if not os.path.exists(dirname + '/results'):
+        os.mkdir(dirname + '/results')
     for img_name in os.listdir(dirname):
-        validate_photo_file(img_name)
+        if not validate_photo_file(img_name):
+            continue
+        photo_res = recognise.start_recognition_photo(dirname + '/' + img_name, is_abc())
+        cv2.imwrite(dirname + '/results/' + img_name, photo_res)
         # save photo with bounding box to another directory
 
-    results_dir = dirname  # the new directory name
-
     if view.get() == 'on':
-        for img_name in os.listdir(results_dir):
+        for img_name in os.listdir(dirname + '/results'):
             if img_name == 'desktop.ini':
                 continue
-            img = cv2.imread(results_dir + '\\' + img_name)
+            img = cv2.imread(dirname + '/results/' + img_name)
             cv2.imshow("Results photo", img)
             cv2.waitKey(0)
         cv2.destroyAllWindows()
@@ -75,7 +77,7 @@ def is_abc():
 
 def info_button_function():
     tkinter.messagebox.showinfo("Authors", "Course: Introduction to Machine Learning 22/23\n\n"
-                                           "Authors: Maciej Radziwił\n\tDawid Mączka\n\t"
+                                           "Authors: Maciej Radziwiłł\n\tDawid Mączka\n\t"
                                            "Nikodem Olszowy\n\tMateusz Sudejko\n\t"
                                            "Maciej Saju Sajecki")
 

@@ -57,8 +57,8 @@ def start_recognition_video(filename, is_abc):
     return start_recognition(filename, True, is_abc)
 
 
-def start_recognition_photo(dirname, is_abc):
-    return start_recognition(dirname, False, is_abc)
+def start_recognition_photo(filename, is_abc):
+    return start_recognition(filename, False, is_abc)
 
 
 def start_recognition(path, is_video, is_abc):
@@ -77,6 +77,21 @@ def start_recognition(path, is_video, is_abc):
         result = cv2.VideoWriter(res_filename,
                                  cv2.VideoWriter_fourcc(*'XVID'),
                                  30, size)
+
+    if path and not is_video:
+        img = cv2.imread(path)
+        resize = cv2.resize(img, (400, 400), interpolation=cv2.INTER_AREA)
+        gray = cv2.cvtColor(resize, cv2.COLOR_BGR2GRAY)
+        ret, thresh1 = cv2.threshold(gray, 160, 255, cv2.THRESH_BINARY)
+
+        thresholded = cv2.resize(thresh1, (64, 64))
+        thresholded = cv2.cvtColor(thresholded, cv2.COLOR_GRAY2RGB)
+        thresholded = np.reshape(thresholded, (1, thresholded.shape[0], thresholded.shape[1], 3))
+
+        pred = model.predict(thresholded)
+        cv2.putText(resize, word_dict[np.argmax(pred)], (170, 45), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+        return resize
+
 
     num_frames = 0
     while True:
@@ -117,7 +132,8 @@ def start_recognition(path, is_video, is_abc):
                 thresholded, hand_segment = hand
 
                 # Drawing contours around hand segment
-                cv2.drawContours(frame_copy, [hand_segment + (ROI_right, ROI_top)], -1, (255, 0, 0), 1)
+                if not path:
+                    cv2.drawContours(frame_copy, [hand_segment + (ROI_right, ROI_top)], -1, (255, 0, 0), 1)
 
                 if not path:
                     cv2.imshow("Thesholded Hand Image", thresholded)

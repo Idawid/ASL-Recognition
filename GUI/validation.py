@@ -23,8 +23,8 @@ def validate_video_file(filename):
 
 
 def validate_photo_file(filename):
-    if filename == 'desktop.ini':
-        return
+    if filename == 'desktop.ini' or filename == 'results':
+        return False
 
     file_name, file_extension = os.path.splitext(filename)
     if DEBUG_MODE:
